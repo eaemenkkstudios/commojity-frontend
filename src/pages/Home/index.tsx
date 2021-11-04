@@ -1,14 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { ThemeContext } from 'styled-components';
 
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
 
-import { Container, Content, Title, Button, Card } from './styles';
+import Button from 'components/Button';
+
+import api from 'services/api';
+
+import { Container, Content, Title, Card, Emoji, EmojiContent } from './styles';
 
 const Home: React.FC = () => {
   const theme = useContext(ThemeContext);
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
+
+  const getGene = useCallback(async () => {
+    try {
+      const { data } = await api.get('/gene?g=🍔🍕');
+      console.log('Data', data);
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    getGene();
+  }, [getGene]);
 
   return (
     <Container>
@@ -19,6 +36,7 @@ const Home: React.FC = () => {
           cursor: 'pointer',
           background: 'transparent',
           padding: 10,
+          marginLeft: 'auto',
         }}
       >
         {isDarkTheme ? '🌞' : '🌚'}
@@ -26,13 +44,35 @@ const Home: React.FC = () => {
       <Content>
         <Title>commojity</Title>
       </Content>
-      <Content style={{ backgroundColor: theme.cards }}>
-        <Button>Grãos</Button>
-        <Button color={theme.green}>Insumos</Button>
-        <Button color={theme.green}>Manutenção</Button>
-        <Button color={theme.green}>Transportação</Button>
-        <Button>Colheita</Button>
-        <Button>Trajeto</Button>
+      <Content style={{ backgroundColor: theme.cards }} horizontal>
+        <EmojiContent>
+          <Emoji>🏢</Emoji>
+        </EmojiContent>
+        <EmojiContent>
+          <Button style={{ marginBottom: 48 }}>Viagem</Button>
+        </EmojiContent>
+        <EmojiContent>
+          <Button color={theme.green} overlayValue={28}>
+            Contratos
+          </Button>
+          <Button color={theme.green} overlayValue={21}>
+            Transporte
+          </Button>
+          <Emoji>🚚</Emoji>
+        </EmojiContent>
+        <EmojiContent>
+          <Button style={{ marginBottom: 48 }}>Colheita</Button>
+        </EmojiContent>
+        <EmojiContent>
+          <Button>Grãos</Button>
+          <Button color={theme.green} overlayValue={39}>
+            Insumos
+          </Button>
+          <Button color={theme.green} overlayValue={12}>
+            Manutenção
+          </Button>
+          <Emoji>🌱</Emoji>
+        </EmojiContent>
       </Content>
       <Content horizontal style={{ justifyContent: 'space-between' }}>
         <Card style={{ flex: 0.3 }}>Visualização de gene</Card>

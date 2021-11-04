@@ -4,10 +4,6 @@ interface IContentProps {
   horizontal?: boolean;
 }
 
-interface IButtonProps {
-  color?: string;
-}
-
 export const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -22,6 +18,8 @@ export const Content = styled.div<IContentProps>`
   padding: 64px;
   display: ${({ horizontal }) => (horizontal ? 'flex' : undefined)};
   flex-direction: ${({ horizontal }) => (horizontal ? 'row' : 'column')};
+  align-items: flex-end;
+  justify-content: center;
 `;
 
 export const Card = styled.div`
@@ -37,12 +35,13 @@ export const Title = styled.h1`
   font-size: 48px;
 `;
 
-export const Button = styled.button<IButtonProps>`
-  background: ${({ theme, color }) => color || theme.purple}15;
-  border: 1px solid ${({ color, theme }) => color || theme.purple};
-  color: ${({ color, theme }) => color || theme.purple};
-  border-radius: 5px;
-  padding: 8px 40px;
-  outline: none;
-  cursor: pointer;
+export const Emoji = styled.span`
+  font-size: 96px;
+  margin: 0 5px;
+`;
+
+export const EmojiContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
