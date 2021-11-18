@@ -45,16 +45,16 @@ export const Title = styled.h1`
 
 export const Label = styled.p`
   font-size: 15px;
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.text};
   margin-bottom: 2px;
 `;
 
 export const Input = styled.input`
   border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.lightText};
+  border: 1px solid ${({ theme }) => theme.text};
   background: ${({ theme }) => theme.cards};
   padding: 5px 15px;
-  color: ${({ theme }) => theme.lightText};
+  color: ${({ theme }) => theme.text};
 `;
 
 export const InputsContainer = styled.div`
