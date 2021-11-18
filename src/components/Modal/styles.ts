@@ -19,8 +19,8 @@ export const Backdrop = styled.div`
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: ${({ theme }) => theme.background};
-  opacity: 0.7;
+  background: ${({ theme }) => theme.black};
+  opacity: 0.6;
   z-index: 10;
 `;
 

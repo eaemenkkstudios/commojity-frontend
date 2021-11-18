@@ -7,6 +7,7 @@ const ThemeDefault: DefaultTheme = {
   lightText: '#FFFFFF',
   green: '#00A389',
   purple: '#AB54DB',
+  black: '#000',
 };
 
 export default ThemeDefault;
