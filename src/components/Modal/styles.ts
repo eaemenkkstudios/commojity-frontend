@@ -46,6 +46,7 @@ export const Title = styled.h1`
 export const Label = styled.p`
   font-size: 15px;
   color: ${({ theme }) => theme.lightText};
+  margin-bottom: 2px;
 `;
 
 export const Input = styled.input`

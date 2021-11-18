@@ -2,6 +2,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
@@ -33,6 +34,58 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   const theme = useContext(ThemeContext);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [points, setPoints] = useState([
+    {
+      label: 'Jan',
+      value: 1,
+    },
+    {
+      label: 'Fev',
+      value: 15,
+    },
+    {
+      label: 'Mar',
+      value: 3,
+    },
+    {
+      label: 'Abr',
+      value: 0.6,
+    },
+    {
+      label: 'Mai',
+      value: 25,
+    },
+    {
+      label: 'Jun',
+      value: 6,
+    },
+    {
+      label: 'Jul',
+      value: 2,
+    },
+    {
+      label: 'Ago',
+      value: 1,
+    },
+    {
+      label: 'Set',
+      value: 10,
+    },
+    {
+      label: 'Out',
+      value: 0,
+    },
+    {
+      label: 'Nov',
+      value: 13,
+    },
+    {
+      label: 'Dez',
+      value: 1,
+    },
+  ]);
+  const [max, setMax] = useState(0);
+  const [min, setMin] = useState(0);
 
   const handleOpen = useCallback(() => setIsModalVisible(true), []);
 
@@ -54,6 +107,10 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     }
   }, [ref, handleOpen, handleClose]);
 
+  useEffect(() => {
+    console.log('POINTS', points);
+  }, [points]);
+
   if (!isModalVisible) return null;
 
   return (
@@ -74,9 +131,17 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
         <Body>
           <InputsContainer>
             <Label>Máximo</Label>
-            <Input />
+            <Input
+              type="number"
+              value={max}
+              onChange={e => setMax(Number(e.target.value))}
+            />
             <Label style={{ marginTop: 5 }}>Mínimo</Label>
-            <Input />
+            <Input
+              type="number"
+              value={min}
+              onChange={e => setMin(Number(e.target.value))}
+            />
             <Button color={theme.purple} margin="5px 0 0 0" noPadding>
               Aleatorizar
             </Button>
@@ -86,23 +151,10 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
             <Line
               title="Flutuação de preço"
               data={{
-                labels: [
-                  'Jan',
-                  'Fev',
-                  'Mar',
-                  'Abr',
-                  'Mai',
-                  'Jun',
-                  'Jul',
-                  'Ago',
-                  'Set',
-                  'Out',
-                  'Nov',
-                  'Dez',
-                ],
+                labels: points.map(point => point.label),
                 datasets: [
                   {
-                    data: [1, 2, 3, 4, 16, 6, 7, 8, 9, 10, 5, 0.1],
+                    data: points.map(point => point.value),
                     borderColor: theme.purple,
                     tension: 0.4,
                     pointBackgroundColor: theme.purple,
@@ -123,16 +175,40 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
                     },
                   },
                 },
-                // @ts-ignore
-                dragData: true,
-                onDragStart(e: any) {
-                  console.log(e);
-                },
-                onDrag(e: any, datasetIndex: any, index: any, value: any) {
-                  console.log(datasetIndex, index, value);
-                },
-                onDragEnd(e: any, datasetIndex: any, index: any, value: any) {
-                  console.log(datasetIndex, index, value);
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  // @ts-ignore
+                  tooltips: {
+                    callbacks: {
+                      label: (tooltipItem: any) => tooltipItem.yLabel,
+                    },
+                  },
+                  // @ts-ignore
+                  dragData: {
+                    round: 1,
+                    showTooltip: true,
+                    onDrag(
+                      e: any,
+                      _datasetIndex: number,
+                      _index: number,
+                      _value: number,
+                    ) {
+                      e.target.style.cursor = 'grabbing';
+                    },
+                    onDragEnd(
+                      e: any,
+                      _datasetIndex: number,
+                      index: number,
+                      value: number,
+                    ) {
+                      e.target.style.cursor = 'pointer';
+                      const newPoints = [...points];
+                      newPoints[index].value = value;
+                      setPoints(newPoints);
+                    },
+                  },
                 },
               }}
             />
