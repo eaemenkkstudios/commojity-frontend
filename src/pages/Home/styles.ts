@@ -32,7 +32,7 @@ export const Card = styled.div`
 export const Title = styled.h1`
   color: ${({ theme }) => theme.purple};
   text-align: right;
-  font-size: 48px;
+  font-size: 64px;
 `;
 
 export const Emoji = styled.span`
@@ -44,4 +44,22 @@ export const EmojiContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const ThemeButton = styled.button`
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+  padding: 10px;
+  margin-left: auto;
+  transition: all 0.2s;
+
+  :hover {
+    filter: brightness(1.3);
+  }
+
+  :active {
+    filter: brightness(0.8);
+    transition: all 0.01s;
+  }
 `;

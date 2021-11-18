@@ -1,22 +1,35 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { ThemeContext } from 'styled-components';
 
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
 
 import Button from 'components/Button';
+import Modal, { IModalRef } from 'components/Modal';
 
 import api from 'services/api';
 
-import { Container, Content, Title, Card, Emoji, EmojiContent } from './styles';
+import { base64ToEmoji, emojiToBase64 } from 'utils/emoji';
+
+import {
+  Container,
+  Content,
+  Title,
+  Card,
+  Emoji,
+  EmojiContent,
+  ThemeButton,
+} from './styles';
 
 const Home: React.FC = () => {
   const theme = useContext(ThemeContext);
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
 
+  const modalRef = useRef<IModalRef>(null);
+
   const getGene = useCallback(async () => {
     try {
-      const { data } = await api.get('/gene?g=🍔🍕');
+      const { data } = await api.get('/23525');
       console.log('Data', data);
     } catch (err) {
       console.log(err);
@@ -25,22 +38,16 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     getGene();
+    console.log('BASE64', emojiToBase64('🍕🍔🍟'));
+    console.log('EMOJI', base64ToEmoji(emojiToBase64('🍕🍔🍟')));
   }, [getGene]);
 
   return (
     <Container>
-      <button
-        onClick={switchTheme}
-        style={{
-          border: 0,
-          cursor: 'pointer',
-          background: 'transparent',
-          padding: 10,
-          marginLeft: 'auto',
-        }}
-      >
+      <ThemeButton onClick={switchTheme}>
         {isDarkTheme ? '🌞' : '🌚'}
-      </button>
+      </ThemeButton>
+      <Modal ref={modalRef} />
       <Content>
         <Title>commojity</Title>
       </Content>
@@ -49,7 +56,12 @@ const Home: React.FC = () => {
           <Emoji>🏢</Emoji>
         </EmojiContent>
         <EmojiContent>
-          <Button style={{ marginBottom: 48 }}>Viagem</Button>
+          <Button
+            style={{ marginBottom: 48 }}
+            onClick={() => modalRef.current?.show()}
+          >
+            Viagem
+          </Button>
         </EmojiContent>
         <EmojiContent>
           <Button color={theme.green} overlayValue={28}>

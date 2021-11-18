@@ -2,27 +2,39 @@ import styled from 'styled-components';
 
 interface IProps {
   color?: string;
+  invert?: boolean;
+  margin?: string;
+  noPadding?: boolean;
 }
 
-export const Container = styled.div`
+export const Container = styled.div<IProps>`
   width: 100%;
   position: relative;
-  padding: 0 16px;
+  padding: ${({ noPadding }) => (noPadding ? 0 : '0 16px')};
+  margin: ${({ margin }) => margin};
 `;
 
 export const Btn = styled.button<IProps>`
-  background: ${({ theme, color }) => color || theme.purple}15;
+  background: ${({ theme, color }) => color || theme.purple}${({ invert }) => (invert ? '' : 15)};
   border: 1px solid ${({ color, theme }) => color || theme.purple};
-  color: ${({ color, theme }) => color || theme.purple};
+  color: ${({ color, invert, theme }) =>
+    invert ? theme.background : color || theme.purple};
   border-radius: 5px;
   padding: 8px 40px;
   outline: none;
   cursor: pointer;
   width: 100%;
   margin: 5px 0;
+  transition: all 0.2s;
+  font-weight: 700;
 
   :hover {
     filter: brightness(1.3);
+  }
+
+  :active {
+    filter: brightness(0.8);
+    transition: all 0.01s;
   }
 `;
 
