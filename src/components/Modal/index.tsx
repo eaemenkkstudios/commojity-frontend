@@ -109,6 +109,9 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
 
   useEffect(() => {
     console.log('POINTS', points);
+    const pointValues = points.map(point => point.value);
+    setMax(Math.max(...pointValues) + 5);
+    setMin(Math.min(...pointValues) - 5);
   }, [points]);
 
   if (!isModalVisible) return null;
@@ -170,6 +173,8 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
                     },
                   },
                   y: {
+                    min,
+                    max,
                     grid: {
                       display: false,
                     },
