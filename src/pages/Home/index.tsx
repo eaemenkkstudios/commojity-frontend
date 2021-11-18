@@ -1,5 +1,12 @@
-import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ThemeContext } from 'styled-components';
+import { Line } from 'react-chartjs-2';
 
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
 
@@ -18,6 +25,12 @@ import {
   Emoji,
   EmojiContent,
   ThemeButton,
+  Label,
+  GeneVisualization,
+  TotalProfit,
+  TotalProfitAmount,
+  TotalProfitLabel,
+  Input,
 } from './styles';
 
 const Home: React.FC = () => {
@@ -26,6 +39,57 @@ const Home: React.FC = () => {
   const { switchTheme, isDarkTheme } = useThemeSwitch();
 
   const modalRef = useRef<IModalRef>(null);
+
+  const [points, setPoints] = useState([
+    {
+      label: 'Jan',
+      value: 1,
+    },
+    {
+      label: 'Fev',
+      value: 15,
+    },
+    {
+      label: 'Mar',
+      value: 3,
+    },
+    {
+      label: 'Abr',
+      value: 0.6,
+    },
+    {
+      label: 'Mai',
+      value: 25,
+    },
+    {
+      label: 'Jun',
+      value: 6,
+    },
+    {
+      label: 'Jul',
+      value: 2,
+    },
+    {
+      label: 'Ago',
+      value: 1,
+    },
+    {
+      label: 'Set',
+      value: 10,
+    },
+    {
+      label: 'Out',
+      value: 0,
+    },
+    {
+      label: 'Nov',
+      value: 13,
+    },
+    {
+      label: 'Dez',
+      value: 1,
+    },
+  ]);
 
   const getGene = useCallback(async () => {
     try {
@@ -107,11 +171,80 @@ const Home: React.FC = () => {
           <Emoji>🌱</Emoji>
         </EmojiContent>
       </Content>
-      <Content horizontal style={{ justifyContent: 'space-between' }}>
-        <Card style={{ flex: 0.3 }}>Visualização de gene</Card>
-        <Card style={{ flex: 0.3 }}>Lucro por mês</Card>
-        <Card style={{ flex: 0.2 }}>Lucro total (1 ano)</Card>
-        <Card style={{ flex: 0.15 }}>Orçamento (1 ano)</Card>
+      <Content
+        horizontal
+        style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
+      >
+        <Card style={{ flex: 0.3 }}>
+          <Label>Visualização de gene</Label>
+          <GeneVisualization>🍕🍔🍟</GeneVisualization>
+        </Card>
+        <Card style={{ flex: 0.3 }}>
+          <Label>Lucro por mês</Label>
+          <div>
+            <Line
+              title="Lucro por mês"
+              data={{
+                labels: [...points.map(point => point.label)],
+                datasets: [
+                  {
+                    data: points.map(point => point.value),
+                    borderColor: theme.purple,
+                    tension: 0.4,
+                    pointBackgroundColor: theme.purple,
+                    pointRadius: 5,
+                  },
+                ],
+              }}
+              options={{
+                scales: {
+                  x: {
+                    grid: {
+                      display: false,
+                    },
+                  },
+                  y: {
+                    min: Math.max(
+                      Math.min(...points.map(point => point.value)) - 5,
+                      0,
+                    ),
+                    max: Math.max(...points.map(point => point.value)) + 5,
+                    grid: {
+                      display: false,
+                    },
+                  },
+                },
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  // @ts-ignore
+                  tooltips: {
+                    callbacks: {
+                      label: (tooltipItem: any) => tooltipItem.yLabel,
+                    },
+                  },
+                },
+              }}
+            />
+          </div>
+        </Card>
+        <Card style={{ flex: 0.2 }}>
+          <Label>Lucro total (1 ano)</Label>
+          <TotalProfit>
+            <TotalProfitLabel>$ 250.000</TotalProfitLabel>
+            <TotalProfitLabel>-$ 120.000</TotalProfitLabel>
+            <TotalProfitAmount>$130.000</TotalProfitAmount>
+          </TotalProfit>
+        </Card>
+        <Card style={{ flex: 0.15 }}>
+          <Label>Orçamento (1 ano)</Label>
+          <Input />
+          <Button invert noPadding>
+            Iniciar
+          </Button>
+          <Button noPadding>Aleatorizar</Button>
+        </Card>
       </Content>
     </Container>
   );

@@ -53,7 +53,7 @@ export const Input = styled.input`
   border-radius: 5px;
   border: 1px solid ${({ theme }) => theme.text};
   background: ${({ theme }) => theme.cards};
-  padding: 5px 15px;
+  padding: 8px 15px;
   color: ${({ theme }) => theme.text};
 `;
 

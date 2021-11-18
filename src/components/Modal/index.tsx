@@ -2,7 +2,6 @@ import {
   forwardRef,
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
@@ -84,8 +83,12 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
       value: 1,
     },
   ]);
-  const [max, setMax] = useState(0);
-  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(
+    Math.max(...points.map(point => point.value)) + 5,
+  );
+  const [min, setMin] = useState(
+    Math.max(Math.min(...points.map(point => point.value)) - 5, 0),
+  );
   const [title, setTitle] = useState('');
 
   const handleOpen = useCallback((modalTitle: string) => {
@@ -111,11 +114,25 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     }
   }, [ref, handleOpen, handleClose]);
 
-  useEffect(() => {
-    const pointValues = points.map(point => point.value);
-    setMax(Math.max(...pointValues) + 5);
-    setMin(Math.min(...pointValues) - 5);
-  }, [points]);
+  const randomize = useCallback(() => {
+    setPoints(prevPoints => [
+      ...prevPoints
+        .map(point => ({
+          ...point,
+          value: Math.random() * (max - min) + min,
+        }))
+        .map((point, index) => {
+          const coeficient = Math.random() * 0.2;
+          return {
+            ...point,
+            value:
+              index > 0 && Math.random() <= 0.95
+                ? prevPoints[index - 1].value + (coeficient - coeficient / 2)
+                : point.value,
+          };
+        }),
+    ]);
+  }, [max, min]);
 
   if (!isModalVisible) return null;
 
@@ -147,8 +164,14 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
               type="number"
               value={min}
               onChange={e => setMin(Number(e.target.value))}
+              min="0"
             />
-            <Button color={theme.purple} margin="5px 0 0 0" noPadding>
+            <Button
+              color={theme.purple}
+              margin="5px 0 0 0"
+              noPadding
+              onClick={randomize}
+            >
               Aleatorizar
             </Button>
           </InputsContainer>
@@ -211,10 +234,12 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
                       index: number,
                       value: number,
                     ) {
-                      e.target.style.cursor = 'pointer';
-                      const newPoints = [...points];
-                      newPoints[index].value = value;
-                      setPoints(newPoints);
+                      e.target.style.cursor = 'default';
+                      setPoints(prevPoints => {
+                        const newPoints = [...prevPoints];
+                        newPoints[index].value = value;
+                        return newPoints;
+                      });
                     },
                   },
                 },

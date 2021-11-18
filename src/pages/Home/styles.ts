@@ -5,8 +5,6 @@ interface IContentProps {
 }
 
 export const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,13 +18,6 @@ export const Content = styled.div<IContentProps>`
   flex-direction: ${({ horizontal }) => (horizontal ? 'row' : 'column')};
   align-items: flex-end;
   justify-content: center;
-`;
-
-export const Card = styled.div`
-  background: ${({ theme }) => theme.cards};
-  border-radius: 5px;
-  padding: 5px;
-  color: ${({ theme }) => theme.text};
 `;
 
 export const Title = styled.h1`
@@ -62,4 +53,57 @@ export const ThemeButton = styled.button`
     filter: brightness(0.8);
     transition: all 0.01s;
   }
+`;
+
+export const Card = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5px;
+`;
+
+export const Label = styled.div`
+  color: ${({ theme }) => theme.text};
+  margin-bottom: 5px;
+`;
+
+export const GeneVisualization = styled.span`
+  background: ${({ theme }) => theme.cards};
+  padding: 24px;
+  width: 100%;
+  text-align: center;
+  font-size: 36px;
+  background: ${({ theme }) => theme.cards};
+  border-radius: 5px;
+`;
+
+export const TotalProfit = styled.div`
+  width: 100%;
+  background: ${({ theme }) => theme.cards};
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 5px;
+`;
+
+export const TotalProfitLabel = styled.span`
+  color: ${({ theme }) => theme.lightText};
+`;
+
+export const TotalProfitAmount = styled.span`
+  color: ${({ theme }) => theme.purple};
+  font-size: 36px;
+`;
+
+export const Input = styled.input`
+  border-radius: 5px;
+  border: 1px solid ${({ theme }) => theme.text};
+  background: ${({ theme }) => theme.cards};
+  padding: 8px 15px;
+  color: ${({ theme }) => theme.text};
+  width: 100%;
+  margin: 5px 0;
 `;
