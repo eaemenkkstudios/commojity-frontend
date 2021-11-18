@@ -26,7 +26,7 @@ import {
 } from './styles';
 
 export interface IModalRef {
-  show: (id?: string) => void;
+  show: (modalTitle: string) => void;
   hide: () => void;
 }
 
@@ -86,8 +86,12 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   ]);
   const [max, setMax] = useState(0);
   const [min, setMin] = useState(0);
+  const [title, setTitle] = useState('');
 
-  const handleOpen = useCallback(() => setIsModalVisible(true), []);
+  const handleOpen = useCallback((modalTitle: string) => {
+    setIsModalVisible(true);
+    setTitle(modalTitle);
+  }, []);
 
   const handleClose = useCallback(() => setIsModalVisible(false), []);
 
@@ -95,12 +99,12 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     if (ref) {
       if (typeof ref === 'function') {
         ref({
-          show: () => handleOpen(),
+          show: (modalTitle: string) => handleOpen(modalTitle),
           hide: () => handleClose(),
         });
       } else {
         ref.current = {
-          show: () => handleOpen(),
+          show: (modalTitle: string) => handleOpen(modalTitle),
           hide: () => handleClose(),
         };
       }
@@ -120,7 +124,7 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
       <Backdrop onClick={handleClose} />
       <Container>
         <Header>
-          <Title>Insumos</Title>
+          <Title>{title}</Title>
           <ButtonsContainer>
             <Button color={theme.purple} margin="0 10px" invert noPadding>
               Salvar

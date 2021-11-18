@@ -37,7 +37,7 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getGene();
+    // getGene();
     console.log('BASE64', emojiToBase64('🍕🍔🍟'));
     console.log('EMOJI', base64ToEmoji(emojiToBase64('🍕🍔🍟')));
   }, [getGene]);
@@ -58,29 +58,50 @@ const Home: React.FC = () => {
         <EmojiContent>
           <Button
             style={{ marginBottom: 48 }}
-            onClick={() => modalRef.current?.show()}
+            onClick={() => modalRef.current?.show('Viagem')}
           >
             Viagem
           </Button>
         </EmojiContent>
         <EmojiContent>
-          <Button color={theme.green} overlayValue={28}>
+          <Button
+            color={theme.green}
+            overlayValue={28}
+            onClick={() => modalRef.current?.show('Contratos')}
+          >
             Contratos
           </Button>
-          <Button color={theme.green} overlayValue={21}>
+          <Button
+            color={theme.green}
+            overlayValue={21}
+            onClick={() => modalRef.current?.show('Transporte')}
+          >
             Transporte
           </Button>
           <Emoji>🚚</Emoji>
         </EmojiContent>
         <EmojiContent>
-          <Button style={{ marginBottom: 48 }}>Colheita</Button>
+          <Button
+            style={{ marginBottom: 48 }}
+            onClick={() => modalRef.current?.show('Colheita')}
+          >
+            Colheita
+          </Button>
         </EmojiContent>
         <EmojiContent>
-          <Button>Grãos</Button>
-          <Button color={theme.green} overlayValue={39}>
+          <Button onClick={() => modalRef.current?.show('Grãos')}>Grãos</Button>
+          <Button
+            color={theme.green}
+            overlayValue={39}
+            onClick={() => modalRef.current?.show('Insumos')}
+          >
             Insumos
           </Button>
-          <Button color={theme.green} overlayValue={12}>
+          <Button
+            color={theme.green}
+            overlayValue={12}
+            onClick={() => modalRef.current?.show('Manutenção')}
+          >
             Manutenção
           </Button>
           <Emoji>🌱</Emoji>
