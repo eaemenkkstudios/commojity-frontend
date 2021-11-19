@@ -40,7 +40,7 @@ const Home: React.FC = () => {
 
   const modalRef = useRef<IModalRef>(null);
 
-  const [points, setPoints] = useState([
+  const [points, _setPoints] = useState([
     {
       label: 'Jan',
       value: 1,
