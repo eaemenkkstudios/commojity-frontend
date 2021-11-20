@@ -17,11 +17,10 @@ export default createGlobalStyle`
 
   .keyboard {
     transition: all 0.8s;
-  }
+    background: #c4c4c4;
 
-  .max-length {
-    .hg-standardBtn {
-      pointer-events: none;
+    .hg-button {
+      background: #ffffff;
     }
   }
 `;

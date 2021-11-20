@@ -29,6 +29,7 @@ import {
   ThemeButton,
   Label,
   GeneVisualization,
+  GeneVisualizationContainer,
   TotalProfit,
   TotalProfitAmount,
   TotalProfitLabel,
@@ -191,62 +192,62 @@ const Home: React.FC = () => {
       >
         <Card style={{ flex: 0.3 }}>
           <Label>Visualização de gene</Label>
-          <GeneVisualization
-            keyboardIsVisible={keyboardIsVisible}
+          <GeneVisualizationContainer
             onClick={() => setKeyboardIsVisible(v => !v)}
           >
-            {emojiInput}
-          </GeneVisualization>
+            <GeneVisualization keyboardIsVisible={keyboardIsVisible}>
+              {emojiInput}
+            </GeneVisualization>
+          </GeneVisualizationContainer>
         </Card>
-        <Card style={{ flex: 0.3 }}>
+        <Card style={{ flex: 0.15 }}>
           <Label>Lucro por mês</Label>
-          <div>
-            <Line
-              title="Lucro por mês"
-              data={{
-                labels: [...points.map(point => point.label)],
-                datasets: [
-                  {
-                    data: points.map(point => point.value),
-                    borderColor: theme.purple,
-                    tension: 0.4,
-                    pointBackgroundColor: theme.purple,
-                    pointRadius: 5,
-                  },
-                ],
-              }}
-              options={{
-                scales: {
-                  x: {
-                    grid: {
-                      display: false,
-                    },
-                  },
-                  y: {
-                    min: Math.max(
-                      Math.min(...points.map(point => point.value)) - 5,
-                      0,
-                    ),
-                    max: Math.max(...points.map(point => point.value)) + 5,
-                    grid: {
-                      display: false,
-                    },
-                  },
+          <Line
+            style={{ width: '100%' }}
+            title="Lucro por mês"
+            data={{
+              labels: [...points.map(point => point.label)],
+              datasets: [
+                {
+                  data: points.map(point => point.value),
+                  borderColor: theme.purple,
+                  tension: 0.4,
+                  pointBackgroundColor: theme.purple,
+                  pointRadius: 5,
                 },
-                plugins: {
-                  legend: {
+              ],
+            }}
+            options={{
+              scales: {
+                x: {
+                  grid: {
                     display: false,
                   },
-                  // @ts-ignore
-                  tooltips: {
-                    callbacks: {
-                      label: (tooltipItem: any) => tooltipItem.yLabel,
-                    },
+                },
+                y: {
+                  min: Math.max(
+                    Math.min(...points.map(point => point.value)) - 5,
+                    0,
+                  ),
+                  max: Math.max(...points.map(point => point.value)) + 5,
+                  grid: {
+                    display: false,
                   },
                 },
-              }}
-            />
-          </div>
+              },
+              plugins: {
+                legend: {
+                  display: false,
+                },
+                // @ts-ignore
+                tooltips: {
+                  callbacks: {
+                    label: (tooltipItem: any) => tooltipItem.yLabel,
+                  },
+                },
+              },
+            }}
+          />
         </Card>
         <Card style={{ flex: 0.2 }}>
           <Label>Lucro total (1 ano)</Label>
@@ -270,8 +271,10 @@ const Home: React.FC = () => {
         layout={{ default: getKeyboardEmojis(32) }}
         theme={`hg-theme-default ${
           keyboardIsVisible ? 'keyboard' : 'hidden-keyboard'
-        } ${emojiInput.length === 16 ? 'max-length' : ''}`}
+        }`}
         display={{ '{bksp}': '⭠ apagar' }}
+        disableButtonHold
+        maxLength={16}
       />
     </Container>
   );

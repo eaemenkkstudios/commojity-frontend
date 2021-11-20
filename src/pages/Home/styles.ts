@@ -63,8 +63,9 @@ export const Card = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
   padding: 5px;
+  min-height: 185px;
 `;
 
 export const Label = styled.div`
@@ -78,28 +79,36 @@ const cursorBlinking = keyframes`
   }
 `;
 
+export const GeneVisualizationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ theme }) => theme.cards};
+  border-radius: 5px;
+  width: 100%;
+  flex: 1;
+`;
+
 export const GeneVisualization = styled.span<IGeneVisualizationProps>`
   padding: 24px;
-  width: 100%;
   text-align: center;
   vertical-align: middle;
   font-size: 36px;
-  background: ${({ theme }) => theme.cards};
-  border-radius: 5px;
   min-height: 110px;
   cursor: text;
-  position: relative;
 
   ${({ theme, keyboardIsVisible }) =>
     keyboardIsVisible &&
     css`
       ::after {
         content: '';
+        border-radius: 5px;
         width: 5px;
-        height: 36px;
+        height: 42px;
         background: ${theme.text};
         display: inline-block;
         animation: ${cursorBlinking} 1.5s steps(2) infinite;
+        transform: translateY(8px);
       }
     `}
 `;
@@ -113,6 +122,7 @@ export const TotalProfit = styled.div`
   align-items: flex-end;
   justify-content: center;
   padding: 5px;
+  flex: 1;
 `;
 
 export const TotalProfitLabel = styled.span`
