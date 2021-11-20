@@ -41,6 +41,7 @@ const Home: React.FC = () => {
   const { switchTheme, isDarkTheme } = useThemeSwitch();
 
   const modalRef = useRef<IModalRef>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const [emojiInput, setEmojiInput] = useState('');
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
@@ -109,6 +110,10 @@ const Home: React.FC = () => {
     console.log('BASE64', emojiToBase64('🍕🍔🍟'));
     console.log('EMOJI', base64ToEmoji(emojiToBase64('🍕🍔🍟')));
   }, [getGene]);
+
+  useEffect(() => {
+    if (keyboardIsVisible) contentRef.current?.scrollIntoView();
+  }, [keyboardIsVisible]);
 
   return (
     <Container>
@@ -182,6 +187,7 @@ const Home: React.FC = () => {
       <Content
         horizontal
         style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
+        ref={contentRef}
       >
         <Card style={{ flex: 0.3 }}>
           <Label>Visualização de gene</Label>
