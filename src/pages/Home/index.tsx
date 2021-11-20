@@ -270,7 +270,7 @@ const Home: React.FC = () => {
         layout={{ default: getKeyboardEmojis(32) }}
         theme={`hg-theme-default ${
           keyboardIsVisible ? 'keyboard' : 'hidden-keyboard'
-        }`}
+        } ${emojiInput.length === 16 ? 'max-length' : ''}`}
         display={{ '{bksp}': '⭠ apagar' }}
       />
     </Container>

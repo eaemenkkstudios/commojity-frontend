@@ -18,4 +18,10 @@ export default createGlobalStyle`
   .keyboard {
     transition: all 0.8s;
   }
+
+  .max-length {
+    .hg-standardBtn {
+      pointer-events: none;
+    }
+  }
 `;
