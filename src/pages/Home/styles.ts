@@ -1,7 +1,11 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 interface IContentProps {
   horizontal?: boolean;
+}
+
+interface IGeneVisualizationProps {
+  keyboardIsVisible?: boolean;
 }
 
 export const Container = styled.div`
@@ -68,15 +72,36 @@ export const Label = styled.div`
   margin-bottom: 5px;
 `;
 
-export const GeneVisualization = styled.span`
+const cursorBlinking = keyframes`
+  0% {
+    opacity: 0;
+  }
+`;
+
+export const GeneVisualization = styled.span<IGeneVisualizationProps>`
   padding: 24px;
   width: 100%;
   text-align: center;
+  vertical-align: middle;
   font-size: 36px;
   background: ${({ theme }) => theme.cards};
   border-radius: 5px;
   min-height: 110px;
   cursor: text;
+  position: relative;
+
+  ${({ theme, keyboardIsVisible }) =>
+    keyboardIsVisible &&
+    css`
+      ::after {
+        content: '';
+        width: 5px;
+        height: 36px;
+        background: ${theme.text};
+        display: inline-block;
+        animation: ${cursorBlinking} 1.5s steps(2) infinite;
+      }
+    `}
 `;
 
 export const TotalProfit = styled.div`

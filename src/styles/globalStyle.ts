@@ -9,10 +9,13 @@ export default createGlobalStyle`
     font-family: 'Poppins', sans-serif;
   }
 
+  .hidden-keyboard {
+    max-height: 0;
+    height: 0;
+    transform: translateY(-200vh);
+  }
+
   .keyboard {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    transition: all 0.8s;
   }
 `;
