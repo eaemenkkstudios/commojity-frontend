@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import { ThemeContext } from 'styled-components';
 import { Line } from 'react-chartjs-2';
+import Keyboard from 'react-simple-keyboard';
+import 'react-simple-keyboard/build/css/index.css';
 
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
 
@@ -40,6 +42,8 @@ const Home: React.FC = () => {
 
   const modalRef = useRef<IModalRef>(null);
 
+  const [emojiInput, setEmojiInput] = useState('');
+  const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
   const [points, _setPoints] = useState([
     {
       label: 'Jan',
@@ -108,10 +112,10 @@ const Home: React.FC = () => {
 
   return (
     <Container>
+      <Modal ref={modalRef} />
       <ThemeButton onClick={switchTheme}>
         {isDarkTheme ? '🌞' : '🌚'}
       </ThemeButton>
-      <Modal ref={modalRef} />
       <Content>
         <Title>commojity</Title>
       </Content>
@@ -177,7 +181,9 @@ const Home: React.FC = () => {
       >
         <Card style={{ flex: 0.3 }}>
           <Label>Visualização de gene</Label>
-          <GeneVisualization>🍕🍔🍟</GeneVisualization>
+          <GeneVisualization onClick={() => setKeyboardIsVisible(v => !v)}>
+            {emojiInput}
+          </GeneVisualization>
         </Card>
         <Card style={{ flex: 0.3 }}>
           <Label>Lucro por mês</Label>
@@ -239,13 +245,40 @@ const Home: React.FC = () => {
         </Card>
         <Card style={{ flex: 0.15 }}>
           <Label>Orçamento (1 ano)</Label>
-          <Input />
+          <Input type="number" min="0" />
           <Button invert noPadding>
             Iniciar
           </Button>
           <Button noPadding>Aleatorizar</Button>
         </Card>
       </Content>
+      {keyboardIsVisible && (
+        <Keyboard
+          onChange={(input: any) => setEmojiInput(input)}
+          layout={{
+            default: [
+              '🍕 🍔 🍟 🌭 🍿 🧂 🥓 🥚 🍳 🧇 🥞 🧈 🍞 {bksp}',
+              '🥐 🥨 🥯 🥖 🫓 🧀 🥗 🥙 🥪 🌮 🌯 🫔 🥫 🍖 🍗 🥩',
+              '🍠 🥟 🥠 🥡 🍱 🍘 🍙 🍚 🍛 🍜 🦪 🍣 🍤 🍥 🥮 🍢',
+              '🧆 🥘 🍲 🫕 🍝 🥣 🥧 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🍫',
+              '🍬 🍭 🍡 🎈 🎆 🎇 🧨 🎉 🎊 🎃 🎄 🎋 🎍 🎎 🎏 🎐',
+              '🎑 🧧 🎀 🎁 🎫 🎠 🎡 🎢 🎪 🎭 🎨 🧵 🪡 🧶 🪢 🛒',
+              '👓 🦺 🥽 🥼 🧥 👔 👕 👖 🩳 🧣 🧤 🧦 👗 🥻 👘 👚',
+              '🩲 🩱 👙 👛 👜 👝 😀 😁 😂 🤣 😃 😄 😅 😆 😉 😊',
+              '😋 😎 😍 😘 🥰 😗 😙 🥲 😚 🙂 🤗 🤩 🤔 🤨 😐 😑',
+              '😶 🙄 😏 😣 😥 😮 🤐 😯 😪 😫 🥱 😴 😌 😛 😜 😝',
+              '🤤 😒 😓 😔 😕 🙃 🤑 😲 🙁 😖 😞 😟 😤 😢 😭 😦',
+              '😧 😨 🐒 🦍 🦧 🐩 🐕 🐈 🐅 🐆 🐎 🦌 🦬 🦏 🦛 🐂',
+              '🐃 🐄 🐖 🐏 🐑 🐐 🐪 🐫 🦙 🦘 🦥 🦨 🦡 🐘 🦣 🐁',
+              '🐀 🦔 🐇 🦫 🦎 🐊 🐢 🐍 🐉 🦕 🦖 🦦 🦭 🦈 🐬 🐳',
+              '🐋 🐟 🐠 🐡 🦐 🦑 🐙 🦞 🦀 🐚 🦆 🐓 🦃 🦅 🦢 🦜',
+              '🦩 🦚 🦉 🦤 🐦 🐧 🐥 🦇 🦋 🐌 🐛 🦟 🪰 🪱 🦗 🐝',
+              '🪲 🐞 🦂',
+            ],
+          }}
+          theme="hg-theme-default" // keyboard"
+        />
+      )}
     </Container>
   );
 };

@@ -69,13 +69,14 @@ export const Label = styled.div`
 `;
 
 export const GeneVisualization = styled.span`
-  background: ${({ theme }) => theme.cards};
   padding: 24px;
   width: 100%;
   text-align: center;
   font-size: 36px;
   background: ${({ theme }) => theme.cards};
   border-radius: 5px;
+  min-height: 110px;
+  cursor: text;
 `;
 
 export const TotalProfit = styled.div`

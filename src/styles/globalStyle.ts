@@ -8,4 +8,11 @@ export default createGlobalStyle`
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
   }
+
+  .keyboard {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 `;

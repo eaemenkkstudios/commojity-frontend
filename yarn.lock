@@ -9651,6 +9651,11 @@ react-scripts@4.0.3:
   optionalDependencies:
     fsevents "^2.1.3"
 
+react-simple-keyboard@^3.3.37:
+  version "3.3.37"
+  resolved "https://registry.yarnpkg.com/react-simple-keyboard/-/react-simple-keyboard-3.3.37.tgz#a28824ca03bd96f21a9c2019c948ca4afc8c49d5"
+  integrity sha512-8PO4QAzPSqKPVS84+gRNtSoADokl3qbYsaidXZiuT0A5AAv7NIxQZTr72kekwMRBZn+DZ0ZEP3ah0A2PBB10Zg==
+
 react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
