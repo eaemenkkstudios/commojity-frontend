@@ -26,6 +26,7 @@ import {
 
 export interface IModalRef {
   show: (modalTitle: string) => void;
+  showError: (errorMsg: string) => void;
   hide: () => void;
 }
 
@@ -33,6 +34,7 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   const theme = useContext(ThemeContext);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [error, setError] = useState('');
   const [points, setPoints] = useState([
     {
       label: 'Jan',
@@ -96,18 +98,29 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     setTitle(modalTitle);
   }, []);
 
-  const handleClose = useCallback(() => setIsModalVisible(false), []);
+  const handleOpenError = useCallback((errorMsg: string) => {
+    setIsModalVisible(true);
+    setError(errorMsg);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setError('');
+    setTitle('');
+    setIsModalVisible(false);
+  }, []);
 
   useLayoutEffect(() => {
     if (ref) {
       if (typeof ref === 'function') {
         ref({
           show: (modalTitle: string) => handleOpen(modalTitle),
+          showError: (errorMsg: string) => handleOpenError(errorMsg),
           hide: () => handleClose(),
         });
       } else {
         ref.current = {
           show: (modalTitle: string) => handleOpen(modalTitle),
+          showError: (errorMsg: string) => handleOpenError(errorMsg),
           hide: () => handleClose(),
         };
       }
@@ -135,6 +148,25 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   }, [max, min]);
 
   if (!isModalVisible) return null;
+
+  if (error)
+    return (
+      <>
+        <Backdrop onClick={handleClose} />
+        <Container>
+          <Title style={{ marginBottom: 8 }}>Oops...</Title>
+          <Label style={{ marginBottom: 32 }}>{error}</Label>
+          <Button
+            style={{ width: 'auto' }}
+            onClick={handleClose}
+            color={theme.purple}
+            noPadding
+          >
+            Ok
+          </Button>
+        </Container>
+      </>
+    );
 
   return (
     <>

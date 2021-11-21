@@ -8,6 +8,7 @@ interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   invert?: boolean;
   margin?: string;
   noPadding?: boolean;
+  arrow?: boolean;
 }
 
 const Button: React.FC<IButtonProps> = ({
@@ -16,10 +17,16 @@ const Button: React.FC<IButtonProps> = ({
   invert,
   margin,
   noPadding,
+  arrow,
   ...rest
 }) => {
   return (
-    <Container margin={margin} noPadding={noPadding}>
+    <Container
+      margin={margin}
+      noPadding={noPadding}
+      arrow={arrow}
+      color={color}
+    >
       <Btn color={color} invert={invert} {...rest} />
       {!!overlayValue && <Overlay color={color}>{overlayValue}%</Overlay>}
     </Container>

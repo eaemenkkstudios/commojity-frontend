@@ -131,14 +131,18 @@ const Home: React.FC = () => {
         onClick={() => setKeyboardIsVisible(false)}
       >
         <EmojiContent>
+          <Button onClick={() => modalRef.current?.show('Preço')}>
+            $ Preço
+          </Button>
           <Emoji>🏢</Emoji>
         </EmojiContent>
         <EmojiContent>
           <Button
             style={{ marginBottom: 48 }}
             onClick={() => modalRef.current?.show('Viagem')}
+            arrow
           >
-            Viagem
+            ✈ Viagem
           </Button>
         </EmojiContent>
         <EmojiContent>
@@ -147,14 +151,14 @@ const Home: React.FC = () => {
             overlayValue={28}
             onClick={() => modalRef.current?.show('Contratos')}
           >
-            Contratos
+            📝 Contratos
           </Button>
           <Button
             color={theme.green}
             overlayValue={21}
             onClick={() => modalRef.current?.show('Transporte')}
           >
-            Transporte
+            ⛟ Transporte
           </Button>
           <Emoji>🚚</Emoji>
         </EmojiContent>
@@ -162,25 +166,28 @@ const Home: React.FC = () => {
           <Button
             style={{ marginBottom: 48 }}
             onClick={() => modalRef.current?.show('Colheita')}
+            arrow
           >
-            Colheita
+            📦 Colheita
           </Button>
         </EmojiContent>
         <EmojiContent>
-          <Button onClick={() => modalRef.current?.show('Grãos')}>Grãos</Button>
+          <Button onClick={() => modalRef.current?.show('Grãos')}>
+            🌾 Grãos
+          </Button>
           <Button
             color={theme.green}
             overlayValue={39}
             onClick={() => modalRef.current?.show('Insumos')}
           >
-            Insumos
+            💧 Insumos
           </Button>
           <Button
             color={theme.green}
             overlayValue={12}
             onClick={() => modalRef.current?.show('Manutenção')}
           >
-            Manutenção
+            🚜 Manutenção
           </Button>
           <Emoji>🌱</Emoji>
         </EmojiContent>
@@ -206,7 +213,7 @@ const Home: React.FC = () => {
             style={{ width: '100%' }}
             title="Lucro por mês"
             data={{
-              labels: [...points.map(point => point.label)],
+              labels: points.map(point => point.label),
               datasets: [
                 {
                   data: points.map(point => point.value),

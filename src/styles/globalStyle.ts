@@ -12,11 +12,11 @@ export default createGlobalStyle`
   .hidden-keyboard {
     max-height: 0;
     height: 0;
-    transform: translateY(-200vh);
+    transform: translateY(-2000vh);
   }
 
   .keyboard {
-    transition: all 0.8s;
+    transition: all 0.6s;
     background: #c4c4c4;
 
     .hg-button {

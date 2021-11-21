@@ -1,10 +1,11 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface IProps {
   color?: string;
   invert?: boolean;
   margin?: string;
   noPadding?: boolean;
+  arrow?: boolean;
 }
 
 export const Container = styled.div<IProps>`
@@ -12,6 +13,27 @@ export const Container = styled.div<IProps>`
   position: relative;
   padding: ${({ noPadding }) => (noPadding ? 0 : '0 16px')};
   margin: ${({ margin }) => margin};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${({ arrow, theme }) =>
+    arrow &&
+    css`
+      ::before {
+        content: '⟵';
+        color: ${theme.text};
+        font-size: 36px;
+        transform: translateY(-24px);
+      }
+
+      ::after {
+        content: '⟞';
+        color: ${theme.text};
+        font-size: 36px;
+        transform: translateY(-24px);
+      }
+    `}
 `;
 
 export const Btn = styled.button<IProps>`
