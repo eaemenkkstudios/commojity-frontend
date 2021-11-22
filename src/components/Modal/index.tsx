@@ -2,7 +2,6 @@ import {
   forwardRef,
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
