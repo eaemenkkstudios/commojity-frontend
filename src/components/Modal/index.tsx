@@ -128,23 +128,27 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   }, [ref, handleOpen, handleClose]);
 
   const randomize = useCallback(() => {
-    setPoints(prevPoints => [
-      ...prevPoints
-        .map(point => ({
-          ...point,
-          value: Math.random() * (max - min) + min,
-        }))
-        .map((point, index) => {
-          const coeficient = Math.random() * 0.2;
-          return {
-            ...point,
-            value:
-              index > 0 && Math.random() <= 0.95
-                ? prevPoints[index - 1].value + (coeficient - coeficient / 2)
-                : point.value,
-          };
-        }),
-    ]);
+    setPoints(prevPoints => {
+      const newPoints = prevPoints.map(point => ({
+        ...point,
+        value: Math.random() * (max - min) + min,
+      }));
+
+      for (let i = 0; i < newPoints.length; i += 1) {
+        const coeficient = Math.random() * 0.5;
+        const value =
+          i > 0 && Math.random() <= 0.65
+            ? newPoints[i - 1].value +
+              (coeficient - coeficient / 2) * newPoints[i].value
+            : newPoints[i].value;
+        newPoints[i] = {
+          ...newPoints[i],
+          value: Math.min(Math.max(value, min), max),
+        };
+      }
+
+      return newPoints;
+    });
   }, [max, min]);
 
   if (!isModalVisible) return null;
