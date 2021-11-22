@@ -11,6 +11,7 @@ import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
+import { useDatasets, IDataset, defaultArray } from 'hooks/useDatasets';
 
 import Button from 'components/Button';
 import Modal, { IModalRef } from 'components/Modal';
@@ -40,62 +41,14 @@ const Home: React.FC = () => {
   const theme = useContext(ThemeContext);
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
+  const { datasets } = useDatasets();
 
   const modalRef = useRef<IModalRef>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const [emojiInput, setEmojiInput] = useState('');
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
-  const [points, _setPoints] = useState([
-    {
-      label: 'Jan',
-      value: 1,
-    },
-    {
-      label: 'Fev',
-      value: 15,
-    },
-    {
-      label: 'Mar',
-      value: 3,
-    },
-    {
-      label: 'Abr',
-      value: 0.6,
-    },
-    {
-      label: 'Mai',
-      value: 25,
-    },
-    {
-      label: 'Jun',
-      value: 6,
-    },
-    {
-      label: 'Jul',
-      value: 2,
-    },
-    {
-      label: 'Ago',
-      value: 1,
-    },
-    {
-      label: 'Set',
-      value: 10,
-    },
-    {
-      label: 'Out',
-      value: 0,
-    },
-    {
-      label: 'Nov',
-      value: 13,
-    },
-    {
-      label: 'Dez',
-      value: 1,
-    },
-  ]);
+  const [points, _setPoints] = useState<IDataset[]>([...defaultArray]);
 
   const getGene = useCallback(async () => {
     try {
@@ -116,6 +69,10 @@ const Home: React.FC = () => {
     if (keyboardIsVisible) contentRef.current?.scrollIntoView();
   }, [keyboardIsVisible]);
 
+  useEffect(() => {
+    console.log('DATASETS', datasets);
+  }, [datasets]);
+
   return (
     <Container>
       <Modal ref={modalRef} />
@@ -131,7 +88,7 @@ const Home: React.FC = () => {
         onClick={() => setKeyboardIsVisible(false)}
       >
         <EmojiContent>
-          <Button onClick={() => modalRef.current?.show('Preço')}>
+          <Button onClick={() => modalRef.current?.show('Preço', 'price')}>
             $ Preço
           </Button>
           <Emoji>🏢</Emoji>
@@ -139,7 +96,7 @@ const Home: React.FC = () => {
         <EmojiContent>
           <Button
             style={{ marginBottom: 48 }}
-            onClick={() => modalRef.current?.show('Viagem')}
+            onClick={() => modalRef.current?.show('Viagem', 'trip')}
             arrow
           >
             ✈ Viagem
@@ -149,14 +106,14 @@ const Home: React.FC = () => {
           <Button
             color={theme.green}
             overlayValue={28}
-            onClick={() => modalRef.current?.show('Contratos')}
+            onClick={() => modalRef.current?.show('Contratos', 'contracts')}
           >
             📝 Contratos
           </Button>
           <Button
             color={theme.green}
             overlayValue={21}
-            onClick={() => modalRef.current?.show('Transporte')}
+            onClick={() => modalRef.current?.show('Transporte', 'transport')}
           >
             ⛟ Transporte
           </Button>
@@ -165,27 +122,27 @@ const Home: React.FC = () => {
         <EmojiContent>
           <Button
             style={{ marginBottom: 48 }}
-            onClick={() => modalRef.current?.show('Colheita')}
+            onClick={() => modalRef.current?.show('Colheita', 'harvest')}
             arrow
           >
             📦 Colheita
           </Button>
         </EmojiContent>
         <EmojiContent>
-          <Button onClick={() => modalRef.current?.show('Grãos')}>
+          <Button onClick={() => modalRef.current?.show('Grãos', 'grains')}>
             🌾 Grãos
           </Button>
           <Button
             color={theme.green}
             overlayValue={39}
-            onClick={() => modalRef.current?.show('Insumos')}
+            onClick={() => modalRef.current?.show('Insumos', 'inputs')}
           >
             💧 Insumos
           </Button>
           <Button
             color={theme.green}
             overlayValue={12}
-            onClick={() => modalRef.current?.show('Manutenção')}
+            onClick={() => modalRef.current?.show('Manutenção', 'maintenance')}
           >
             🚜 Manutenção
           </Button>

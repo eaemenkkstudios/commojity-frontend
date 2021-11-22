@@ -2,6 +2,7 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useState,
 } from 'react';
@@ -10,6 +11,10 @@ import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-dragdata';
 
 import Button from 'components/Button';
+
+import { randomizeArray } from 'utils/random';
+
+import { IDatasets, IDataset, useDatasets } from 'hooks/useDatasets';
 
 import {
   Container,
@@ -25,7 +30,7 @@ import {
 } from './styles';
 
 export interface IModalRef {
-  show: (modalTitle: string) => void;
+  show: (modalTitle: string, modalKey: keyof IDatasets) => void;
   showError: (errorMsg: string) => void;
   hide: () => void;
 }
@@ -33,70 +38,27 @@ export interface IModalRef {
 const Modal = forwardRef<IModalRef>((_, ref) => {
   const theme = useContext(ThemeContext);
 
+  const { datasets, setDatasets } = useDatasets();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [error, setError] = useState('');
-  const [points, setPoints] = useState([
-    {
-      label: 'Jan',
-      value: 1,
-    },
-    {
-      label: 'Fev',
-      value: 15,
-    },
-    {
-      label: 'Mar',
-      value: 3,
-    },
-    {
-      label: 'Abr',
-      value: 0.6,
-    },
-    {
-      label: 'Mai',
-      value: 25,
-    },
-    {
-      label: 'Jun',
-      value: 6,
-    },
-    {
-      label: 'Jul',
-      value: 2,
-    },
-    {
-      label: 'Ago',
-      value: 1,
-    },
-    {
-      label: 'Set',
-      value: 10,
-    },
-    {
-      label: 'Out',
-      value: 0,
-    },
-    {
-      label: 'Nov',
-      value: 13,
-    },
-    {
-      label: 'Dez',
-      value: 1,
-    },
-  ]);
-  const [max, setMax] = useState(
-    Math.max(...points.map(point => point.value)) + 5,
-  );
-  const [min, setMin] = useState(
-    Math.max(Math.min(...points.map(point => point.value)) - 5, 0),
-  );
+  const [key, setKey] = useState<keyof IDatasets>('' as keyof IDatasets);
+  const [points, setPoints] = useState<IDataset[]>([]);
+  const [max, setMax] = useState(0);
+  const [min, setMin] = useState(0);
   const [title, setTitle] = useState('');
 
-  const handleOpen = useCallback((modalTitle: string) => {
-    setIsModalVisible(true);
-    setTitle(modalTitle);
-  }, []);
+  const handleOpen = useCallback(
+    (modalTitle: string, modalKey: keyof IDatasets) => {
+      setIsModalVisible(true);
+      setKey(modalKey);
+      setPoints(datasets[modalKey].data);
+      setMax(datasets[modalKey].max);
+      setMin(datasets[modalKey].min);
+      setTitle(modalTitle);
+    },
+    [datasets],
+  );
 
   const handleOpenError = useCallback((errorMsg: string) => {
     setIsModalVisible(true);
@@ -113,13 +75,15 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     if (ref) {
       if (typeof ref === 'function') {
         ref({
-          show: (modalTitle: string) => handleOpen(modalTitle),
+          show: (modalTitle: string, modalKey: keyof IDatasets) =>
+            handleOpen(modalTitle, modalKey),
           showError: (errorMsg: string) => handleOpenError(errorMsg),
           hide: () => handleClose(),
         });
       } else {
         ref.current = {
-          show: (modalTitle: string) => handleOpen(modalTitle),
+          show: (modalTitle: string, modalKey: keyof IDatasets) =>
+            handleOpen(modalTitle, modalKey),
           showError: (errorMsg: string) => handleOpenError(errorMsg),
           hide: () => handleClose(),
         };
@@ -127,29 +91,22 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     }
   }, [ref, handleOpen, handleClose]);
 
-  const randomize = useCallback(() => {
-    setPoints(prevPoints => {
-      const newPoints = prevPoints.map(point => ({
-        ...point,
-        value: Math.random() * (max - min) + min,
-      }));
+  const randomize = useCallback(
+    () => setPoints(prevPoints => randomizeArray(prevPoints, min, max)),
+    [max, min],
+  );
 
-      for (let i = 0; i < newPoints.length; i += 1) {
-        const coeficient = Math.random() * 0.5;
-        const value =
-          i > 0 && Math.random() <= 0.65
-            ? newPoints[i - 1].value +
-              (coeficient - coeficient / 2) * newPoints[i].value
-            : newPoints[i].value;
-        newPoints[i] = {
-          ...newPoints[i],
-          value: Math.min(Math.max(value, min), max),
-        };
-      }
-
-      return newPoints;
+  const handleSave = useCallback(() => {
+    setDatasets({
+      ...datasets,
+      [key]: {
+        min,
+        max,
+        data: points,
+      },
     });
-  }, [max, min]);
+    handleClose();
+  }, [min, max, points]);
 
   if (!isModalVisible) return null;
 
@@ -179,7 +136,13 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
         <Header>
           <Title>{title}</Title>
           <ButtonsContainer>
-            <Button color={theme.purple} margin="0 10px" invert noPadding>
+            <Button
+              onClick={handleSave}
+              color={theme.purple}
+              margin="0 10px"
+              invert
+              noPadding
+            >
               Salvar
             </Button>
             <Button onClick={handleClose} color={theme.purple} noPadding>
