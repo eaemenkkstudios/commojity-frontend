@@ -9,6 +9,15 @@ export default createGlobalStyle`
     font-family: 'Poppins', sans-serif;
   }
 
+  #root {
+    height: 100vh;
+    background: ${({ theme }) => theme.background};
+  }
+
+  html, body {
+    background: ${({ theme }) => theme.background};
+  }
+
   .hidden-keyboard {
     max-height: 0;
     height: 0;

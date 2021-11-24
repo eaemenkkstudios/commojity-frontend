@@ -13,11 +13,12 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: center;
   background: ${({ theme }) => theme.background};
+  height: 100%;
 `;
 
 export const Content = styled.div<IContentProps>`
   width: 100%;
-  padding: 64px;
+  padding: 48px;
   display: ${({ horizontal }) => (horizontal ? 'flex' : undefined)};
   flex-direction: ${({ horizontal }) => (horizontal ? 'row' : 'column')};
   align-items: flex-end;

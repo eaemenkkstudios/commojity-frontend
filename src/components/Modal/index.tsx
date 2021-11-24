@@ -26,11 +26,13 @@ import {
   InputsContainer,
   GraphContainer,
   ButtonsContainer,
+  Loader,
 } from './styles';
 
 export interface IModalRef {
   show: (modalTitle: string, modalKey: keyof IDatasets) => void;
   showError: (errorMsg: string) => void;
+  showLoading: () => void;
   hide: () => void;
 }
 
@@ -41,6 +43,7 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [key, setKey] = useState<keyof IDatasets>('' as keyof IDatasets);
   const [points, setPoints] = useState<IDataset[]>([]);
   const [max, setMax] = useState(0);
@@ -64,9 +67,15 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
     setError(errorMsg);
   }, []);
 
+  const handleOpenLoading = useCallback(() => {
+    setIsModalVisible(true);
+    setLoading(true);
+  }, []);
+
   const handleClose = useCallback(() => {
     setError('');
     setTitle('');
+    setLoading(false);
     setIsModalVisible(false);
   }, []);
 
@@ -77,6 +86,7 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
           show: (modalTitle: string, modalKey: keyof IDatasets) =>
             handleOpen(modalTitle, modalKey),
           showError: (errorMsg: string) => handleOpenError(errorMsg),
+          showLoading: () => handleOpenLoading(),
           hide: () => handleClose(),
         });
       } else {
@@ -84,6 +94,7 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
           show: (modalTitle: string, modalKey: keyof IDatasets) =>
             handleOpen(modalTitle, modalKey),
           showError: (errorMsg: string) => handleOpenError(errorMsg),
+          showLoading: () => handleOpenLoading(),
           hide: () => handleClose(),
         };
       }
@@ -108,6 +119,16 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   }, [min, max, points]);
 
   if (!isModalVisible) return null;
+
+  if (loading)
+    return (
+      <>
+        <Backdrop />
+        <Container style={{ background: 'transparent' }}>
+          <Loader />
+        </Container>
+      </>
+    );
 
   if (error)
     return (
@@ -155,13 +176,19 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
             <Input
               type="number"
               value={max}
-              onChange={e => setMax(Number(e.target.value))}
+              onChange={e =>
+                !datasets[key].noRangeUpdate && setMax(Number(e.target.value))
+              }
+              disabled={datasets[key].noRangeUpdate}
             />
             <Label style={{ marginTop: 5 }}>Mínimo</Label>
             <Input
               type="number"
               value={min}
-              onChange={e => setMin(Number(e.target.value))}
+              onChange={e =>
+                !datasets[key].noRangeUpdate && setMin(Number(e.target.value))
+              }
+              disabled={datasets[key].noRangeUpdate}
               min="0"
             />
             <Button
@@ -174,9 +201,17 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
             </Button>
           </InputsContainer>
           <GraphContainer>
-            <Label>Flutuação de preço</Label>
+            <Label>
+              {datasets[key].noRangeUpdate
+                ? 'Flutuação de chance'
+                : 'Flutuação de preço'}
+            </Label>
             <Line
-              title="Flutuação de preço"
+              title={
+                datasets[key].noRangeUpdate
+                  ? 'Flutuação de chance'
+                  : 'Flutuação de preço'
+              }
               data={{
                 labels: points.map(point => point.label),
                 datasets: [

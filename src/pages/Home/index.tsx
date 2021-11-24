@@ -19,6 +19,7 @@ import Modal, { IModalRef } from 'components/Modal';
 import api from 'services/api';
 
 import { base64ToEmoji, emojiToBase64, getKeyboardEmojis } from 'utils/emoji';
+import { formatCurrency } from 'utils/currency';
 
 import {
   Container,
@@ -41,37 +42,111 @@ const Home: React.FC = () => {
   const theme = useContext(ThemeContext);
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
-  const { datasets } = useDatasets();
+  const { datasets, randomizeData } = useDatasets();
 
   const modalRef = useRef<IModalRef>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const [emojiInput, setEmojiInput] = useState('');
+  const [emojiInput, setEmojiInput] = useState('🍕🍔🍟🌭🍿🧂🥓🥚');
+  const [refresh, setRefresh] = useState(true);
+  const [budget, setBudget] = useState(100000);
+  const [profit, setProfit] = useState(0);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
-  const [points, _setPoints] = useState<IDataset[]>([...defaultArray]);
+  const [points, setPoints] = useState<IDataset[]>([...defaultArray]);
+  const [loading, setLoading] = useState(false);
 
-  const getGene = useCallback(async () => {
+  const getGenePerformance = useCallback(async () => {
+    setLoading(true);
+
     try {
-      const { data } = await api.get('/23525');
-      console.log('Data', data);
+      const { data } = await api.post<{ fitness: number; months: number[] }>(
+        '/fitness',
+        {
+          gene: emojiToBase64(emojiInput),
+          scenario: {
+            budget,
+            grains: datasets.grains.data.map(valueArr => valueArr.value),
+            inputs: datasets.inputs.data.map(valueArr => valueArr.value),
+            maintenance: datasets.maintenance.data.map(
+              valueArr => valueArr.value,
+            ),
+            harvest: datasets.harvest.data.map(
+              valueArr => valueArr.value / 100,
+            ),
+            contracts: datasets.contracts.data.map(valueArr => valueArr.value),
+            transport: datasets.transport.data.map(valueArr => valueArr.value),
+            route: datasets.route.data.map(valueArr => valueArr.value / 100),
+            price: datasets.price.data.map(valueArr => valueArr.value),
+          },
+        },
+      );
+      setProfit(data.fitness);
+      setPoints(prevPoints =>
+        prevPoints.map((point, index) => ({
+          ...point,
+          value: data.months[index],
+        })),
+      );
     } catch (err) {
-      console.log(err);
+      console.log('ERR', err);
     }
-  }, []);
 
-  useEffect(() => {
-    // getGene();
-    console.log('BASE64', emojiToBase64('🍕🍔🍟'));
-    console.log('EMOJI', base64ToEmoji(emojiToBase64('🍕🍔🍟')));
-  }, [getGene]);
+    setLoading(false);
+  }, [emojiInput, datasets, budget]);
+
+  const getBestGene = useCallback(async () => {
+    setLoading(true);
+    setRefresh(false);
+    try {
+      const { data } = await api.post<{
+        best: string;
+        fitness: number;
+        months: number[];
+      }>('/process', {
+        scenario: {
+          budget,
+          grains: datasets.grains.data.map(valueArr => valueArr.value),
+          inputs: datasets.inputs.data.map(valueArr => valueArr.value),
+          maintenance: datasets.maintenance.data.map(
+            valueArr => valueArr.value,
+          ),
+          harvest: datasets.harvest.data.map(valueArr => valueArr.value / 100),
+          contracts: datasets.contracts.data.map(valueArr => valueArr.value),
+          transport: datasets.transport.data.map(valueArr => valueArr.value),
+          route: datasets.route.data.map(valueArr => valueArr.value / 100),
+          price: datasets.price.data.map(valueArr => valueArr.value),
+        },
+      });
+      console.log('process', data);
+      setEmojiInput(base64ToEmoji(data.best));
+      setProfit(data.fitness);
+      setPoints(prevPoints =>
+        prevPoints.map((point, index) => ({
+          ...point,
+          value: data.months[index],
+        })),
+      );
+    } catch (err) {
+      console.log('ERR', err);
+    }
+    setLoading(false);
+  }, [datasets, budget]);
 
   useEffect(() => {
     if (keyboardIsVisible) contentRef.current?.scrollIntoView();
   }, [keyboardIsVisible]);
 
   useEffect(() => {
-    console.log('DATASETS', datasets);
-  }, [datasets]);
+    if (refresh) {
+      const timer = setTimeout(() => getGenePerformance(), 700);
+      return () => clearTimeout(timer);
+    }
+  }, [getGenePerformance, refresh]);
+
+  useEffect(() => {
+    if (loading) modalRef.current?.showLoading();
+    else modalRef.current?.hide();
+  }, [loading]);
 
   return (
     <Container>
@@ -96,7 +171,7 @@ const Home: React.FC = () => {
         <EmojiContent>
           <Button
             style={{ marginBottom: 48 }}
-            onClick={() => modalRef.current?.show('Viagem', 'trip')}
+            onClick={() => modalRef.current?.show('Viagem', 'route')}
             arrow
           >
             ✈ Viagem
@@ -164,10 +239,9 @@ const Home: React.FC = () => {
             </GeneVisualization>
           </GeneVisualizationContainer>
         </Card>
-        <Card style={{ flex: 0.15 }}>
+        <Card style={{ flex: 0.2 }}>
           <Label>Lucro por mês</Label>
           <Line
-            style={{ width: '100%' }}
             title="Lucro por mês"
             data={{
               labels: points.map(point => point.label),
@@ -189,10 +263,7 @@ const Home: React.FC = () => {
                   },
                 },
                 y: {
-                  min: Math.max(
-                    Math.min(...points.map(point => point.value)) - 5,
-                    0,
-                  ),
+                  min: Math.min(...points.map(point => point.value)) - 5,
                   max: Math.max(...points.map(point => point.value)) + 5,
                   grid: {
                     display: false,
@@ -216,22 +287,37 @@ const Home: React.FC = () => {
         <Card style={{ flex: 0.2 }}>
           <Label>Lucro total (1 ano)</Label>
           <TotalProfit>
-            <TotalProfitLabel>$ 250.000</TotalProfitLabel>
-            <TotalProfitLabel>-$ 120.000</TotalProfitLabel>
-            <TotalProfitAmount>$130.000</TotalProfitAmount>
+            <TotalProfitLabel>{formatCurrency(budget)}</TotalProfitLabel>
+            <TotalProfitLabel>
+              {formatCurrency(profit - budget)}
+            </TotalProfitLabel>
+            <TotalProfitAmount>{formatCurrency(profit)}</TotalProfitAmount>
           </TotalProfit>
         </Card>
         <Card style={{ flex: 0.15 }}>
           <Label>Orçamento (1 ano)</Label>
-          <Input type="number" min="0" />
-          <Button invert noPadding>
+          <Input
+            type="number"
+            min="0"
+            value={budget}
+            onChange={e => {
+              setBudget(Number(e.target.value));
+              setRefresh(true);
+            }}
+          />
+          <Button invert noPadding onClick={getBestGene}>
             Iniciar
           </Button>
-          <Button noPadding>Aleatorizar</Button>
+          <Button noPadding onClick={randomizeData}>
+            Aleatorizar
+          </Button>
         </Card>
       </Content>
       <Keyboard
-        onChange={(input: any) => setEmojiInput(input)}
+        onChange={(input: any) => {
+          setEmojiInput(input);
+          setRefresh(true);
+        }}
         layout={{ default: getKeyboardEmojis(32) }}
         theme={`hg-theme-default ${
           keyboardIsVisible ? 'keyboard' : 'hidden-keyboard'

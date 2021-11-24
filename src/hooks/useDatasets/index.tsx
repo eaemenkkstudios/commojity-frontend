@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from 'react';
 
 import { randomizeArray } from 'utils/random';
 
@@ -10,6 +16,7 @@ export interface IDataset {
 export interface IData {
   min: number;
   max: number;
+  noRangeUpdate?: boolean;
   data: IDataset[];
 }
 
@@ -20,7 +27,7 @@ export interface IDatasets {
   harvest: IData;
   contracts: IData;
   transport: IData;
-  trip: IData;
+  route: IData;
   price: IData;
 }
 
@@ -78,8 +85,9 @@ export const defaultArray: IDataset[] = [
 // Context
 export interface IDatasetsContextData {
   datasets: IDatasets;
-
   setDatasets: (datasets: IDatasets) => void;
+
+  randomizeData: () => void;
 }
 
 // Context
@@ -91,17 +99,17 @@ export const DatasetsContext = createContext<IDatasetsContextData>(
 export const DatasetsProvider: React.FC = ({ children }) => {
   // Context states
   const [datasets, setDatasets] = useState<IDatasets>({
-    grains: { min: 0, max: 30, data: [...defaultArray] },
-    inputs: { min: 0, max: 30, data: [...defaultArray] },
-    maintenance: { min: 0, max: 30, data: [...defaultArray] },
-    harvest: { min: 0, max: 30, data: [...defaultArray] },
-    contracts: { min: 0, max: 30, data: [...defaultArray] },
-    transport: { min: 0, max: 30, data: [...defaultArray] },
-    trip: { min: 0, max: 30, data: [...defaultArray] },
-    price: { min: 0, max: 30, data: [...defaultArray] },
+    grains: { min: 0, max: 1000, data: [...defaultArray] },
+    inputs: { min: 0, max: 10, data: [...defaultArray] },
+    maintenance: { min: 0, max: 100, data: [...defaultArray] },
+    harvest: { min: 0, max: 100, noRangeUpdate: true, data: [...defaultArray] },
+    contracts: { min: 0, max: 10, data: [...defaultArray] },
+    transport: { min: 0, max: 10, data: [...defaultArray] },
+    route: { min: 0, max: 100, noRangeUpdate: true, data: [...defaultArray] },
+    price: { min: 0, max: 1000, data: [...defaultArray] },
   });
 
-  useEffect(() => {
+  const randomizeData = useCallback(() => {
     setDatasets(data => ({
       grains: {
         ...data.grains,
@@ -151,9 +159,9 @@ export const DatasetsProvider: React.FC = ({ children }) => {
           data.transport.max,
         ),
       },
-      trip: {
-        ...data.trip,
-        data: randomizeArray(data.trip.data, data.trip.min, data.trip.max),
+      route: {
+        ...data.route,
+        data: randomizeArray(data.route.data, data.route.min, data.route.max),
       },
       price: {
         ...data.price,
@@ -162,11 +170,17 @@ export const DatasetsProvider: React.FC = ({ children }) => {
     }));
   }, []);
 
+  useEffect(() => {
+    randomizeData();
+  }, [randomizeData]);
+
   return (
     <DatasetsContext.Provider
       value={{
         datasets,
         setDatasets,
+
+        randomizeData,
       }}
     >
       {children}

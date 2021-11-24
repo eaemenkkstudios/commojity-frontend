@@ -6,13 +6,10 @@ import { DatasetsProvider } from 'hooks/useDatasets';
 
 import Routes from 'routes';
 
-import GlobalStyle from 'styles/globalStyle';
-
 ReactDOM.render(
   <React.StrictMode>
     <ThemeSwitchProvider>
       <DatasetsProvider>
-        <GlobalStyle />
         <Routes />
       </DatasetsProvider>
     </ThemeSwitchProvider>
