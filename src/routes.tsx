@@ -9,7 +9,7 @@ import lightTheme from 'styles/themes/light';
 
 import GlobalStyle from 'styles/globalStyle';
 
-import Home from 'pages/Home';
+import { Home } from 'pages/Home';
 
 const Routes: React.FC = () => {
   const { isDarkTheme } = useThemeSwitch();
@@ -24,4 +24,4 @@ const Routes: React.FC = () => {
   );
 };
 
-export default Routes;
+export { Routes };

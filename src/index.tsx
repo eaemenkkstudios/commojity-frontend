@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { ThemeSwitchProvider } from 'hooks/useThemeSwitch';
 import { DatasetsProvider } from 'hooks/useDatasets';
 
-import Routes from 'routes';
+import { Routes } from 'routes';
 
 ReactDOM.render(
   <React.StrictMode>

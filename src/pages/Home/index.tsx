@@ -1,22 +1,16 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { ThemeContext } from 'styled-components';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 
+import { useTheme } from 'hooks/useTheme';
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
 import { useDatasets, IDataset, defaultArray } from 'hooks/useDatasets';
 
-import Button from 'components/Button';
-import Modal, { IModalRef } from 'components/Modal';
+import { Button } from 'components/Button';
+import { Modal, IModalRef } from 'components/Modal';
 
-import api from 'services/api';
+import { api } from 'services/api';
 
 import { base64ToEmoji, emojiToBase64, getKeyboardEmojis } from 'utils/emoji';
 import { formatCurrency } from 'utils/currency';
@@ -39,7 +33,7 @@ import {
 } from './styles';
 
 const Home: React.FC = () => {
-  const theme = useContext(ThemeContext);
+  const theme = useTheme();
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
   const { datasets, randomizeData } = useDatasets();
@@ -330,4 +324,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export { Home };

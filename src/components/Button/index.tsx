@@ -38,4 +38,4 @@ Button.defaultProps = {
   overlayValue: undefined,
 };
 
-export default Button;
+export { Button };

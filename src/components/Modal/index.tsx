@@ -1,18 +1,12 @@
-import {
-  forwardRef,
-  useCallback,
-  useContext,
-  useLayoutEffect,
-  useState,
-} from 'react';
-import { ThemeContext } from 'styled-components';
+import { forwardRef, useCallback, useLayoutEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-plugin-dragdata';
 
-import Button from 'components/Button';
+import { Button } from 'components/Button';
 
 import { randomizeArray } from 'utils/random';
 
+import { useTheme } from 'hooks/useTheme';
 import { IDatasets, IDataset, useDatasets } from 'hooks/useDatasets';
 
 import {
@@ -37,7 +31,7 @@ export interface IModalRef {
 }
 
 const Modal = forwardRef<IModalRef>((_, ref) => {
-  const theme = useContext(ThemeContext);
+  const theme = useTheme();
 
   const { datasets, setDatasets } = useDatasets();
 
@@ -285,4 +279,4 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   );
 });
 
-export default Modal;
+export { Modal };
