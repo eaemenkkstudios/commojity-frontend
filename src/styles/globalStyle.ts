@@ -10,7 +10,6 @@ export default createGlobalStyle`
   }
 
   #root {
-    height: 100vh;
     background: ${({ theme }) => theme.background};
   }
 

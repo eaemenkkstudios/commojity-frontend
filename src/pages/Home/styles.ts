@@ -14,6 +14,7 @@ export const Container = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.background};
   height: 100%;
+  overflow: auto;
 `;
 
 export const Content = styled.div<IContentProps>`
