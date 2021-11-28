@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import { ThemeContext } from 'styled-components';
+import { ThemeContext, DefaultTheme } from 'styled-components';
 
-const useTheme = () => {
+const useTheme = (): DefaultTheme => {
   // Get data from context
   const context = useContext(ThemeContext);
 
