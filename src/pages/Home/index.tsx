@@ -48,8 +48,10 @@ const Home: React.FC = () => {
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
   const [points, setPoints] = useState<IDataset[]>([...defaultArray]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const getGenePerformance = useCallback(async () => {
+    setError('');
     setLoading(true);
 
     try {
@@ -82,6 +84,7 @@ const Home: React.FC = () => {
         })),
       );
     } catch (err) {
+      setError('Could not load gene fitness');
       console.log('ERR', err);
     }
 
@@ -89,8 +92,10 @@ const Home: React.FC = () => {
   }, [emojiInput, datasets, budget]);
 
   const getBestGene = useCallback(async () => {
+    setError('');
     setLoading(true);
     setRefresh(false);
+
     try {
       const { data } = await api.post<{
         best: string;
@@ -121,6 +126,7 @@ const Home: React.FC = () => {
         })),
       );
     } catch (err) {
+      setError('Could not get best gene data');
       console.log('ERR', err);
     }
     setLoading(false);
@@ -139,8 +145,9 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (loading) modalRef.current?.showLoading();
+    else if (error) modalRef.current?.showError(error);
     else modalRef.current?.hide();
-  }, [loading]);
+  }, [loading, error]);
 
   return (
     <Container>

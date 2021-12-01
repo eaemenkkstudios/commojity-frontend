@@ -57,8 +57,9 @@ const Modal = forwardRef<IModalRef>((_, ref) => {
   );
 
   const handleOpenError = useCallback((errorMsg: string) => {
-    setIsModalVisible(true);
     setError(errorMsg);
+    setIsModalVisible(true);
+    setLoading(false);
   }, []);
 
   const handleOpenLoading = useCallback(() => {
