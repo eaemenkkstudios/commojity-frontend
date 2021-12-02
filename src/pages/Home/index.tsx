@@ -5,12 +5,7 @@ import 'react-simple-keyboard/build/css/index.css';
 
 import { useTheme } from 'hooks/useTheme';
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
-import {
-  useDatasets,
-  IDataset,
-  IDatasets,
-  defaultArray,
-} from 'hooks/useDatasets';
+import { useDatasets, IDataset, defaultArray } from 'hooks/useDatasets';
 
 import { Button } from 'components/Button';
 import { Modal, IModalRef } from 'components/Modal';
@@ -41,7 +36,7 @@ const Home: React.FC = () => {
   const theme = useTheme();
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
-  const { datasets, setDatasets, randomizeData } = useDatasets();
+  const { datasets, randomizeData } = useDatasets();
 
   const modalRef = useRef<IModalRef>(null);
   const contentRef = useRef<HTMLDivElement>(null);
