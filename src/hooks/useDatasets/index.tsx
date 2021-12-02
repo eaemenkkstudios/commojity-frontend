@@ -18,6 +18,7 @@ export interface IData {
   max: number;
   noRangeUpdate?: boolean;
   data: IDataset[];
+  stat: number;
 }
 
 export interface IDatasets {
@@ -99,14 +100,26 @@ export const DatasetsContext = createContext<IDatasetsContextData>(
 export const DatasetsProvider: React.FC = ({ children }) => {
   // Context states
   const [datasets, setDatasets] = useState<IDatasets>({
-    grains: { min: 0, max: 1000, data: [...defaultArray] },
-    inputs: { min: 0, max: 10, data: [...defaultArray] },
-    maintenance: { min: 0, max: 100, data: [...defaultArray] },
-    harvest: { min: 0, max: 100, noRangeUpdate: true, data: [...defaultArray] },
-    contracts: { min: 0, max: 10, data: [...defaultArray] },
-    transport: { min: 0, max: 10, data: [...defaultArray] },
-    route: { min: 0, max: 100, noRangeUpdate: true, data: [...defaultArray] },
-    price: { min: 0, max: 1000, data: [...defaultArray] },
+    grains: { min: 0, max: 1000, data: [...defaultArray], stat: 0 },
+    inputs: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
+    maintenance: { min: 0, max: 100, data: [...defaultArray], stat: 0 },
+    harvest: {
+      min: 0,
+      max: 100,
+      noRangeUpdate: true,
+      data: [...defaultArray],
+      stat: 0,
+    },
+    contracts: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
+    transport: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
+    route: {
+      min: 0,
+      max: 100,
+      noRangeUpdate: true,
+      data: [...defaultArray],
+      stat: 0,
+    },
+    price: { min: 0, max: 100, data: [...defaultArray], stat: 0 },
   });
 
   const randomizeData = useCallback(() => {

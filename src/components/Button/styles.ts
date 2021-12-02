@@ -11,7 +11,7 @@ interface IProps {
 export const Container = styled.div<IProps>`
   width: 100%;
   position: relative;
-  padding: ${({ noPadding }) => (noPadding ? 0 : '0 16px')};
+  padding: ${({ noPadding }) => (noPadding ? 0 : '0 24px')};
   margin: ${({ margin }) => margin};
   display: flex;
   align-items: center;

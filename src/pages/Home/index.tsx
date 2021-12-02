@@ -5,7 +5,12 @@ import 'react-simple-keyboard/build/css/index.css';
 
 import { useTheme } from 'hooks/useTheme';
 import { useThemeSwitch } from 'hooks/useThemeSwitch';
-import { useDatasets, IDataset, defaultArray } from 'hooks/useDatasets';
+import {
+  useDatasets,
+  IDataset,
+  IDatasets,
+  defaultArray,
+} from 'hooks/useDatasets';
 
 import { Button } from 'components/Button';
 import { Modal, IModalRef } from 'components/Modal';
@@ -36,7 +41,7 @@ const Home: React.FC = () => {
   const theme = useTheme();
 
   const { switchTheme, isDarkTheme } = useThemeSwitch();
-  const { datasets, randomizeData } = useDatasets();
+  const { datasets, setDatasets, randomizeData } = useDatasets();
 
   const modalRef = useRef<IModalRef>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -47,6 +52,12 @@ const Home: React.FC = () => {
   const [profit, setProfit] = useState(0);
   const [keyboardIsVisible, setKeyboardIsVisible] = useState(false);
   const [points, setPoints] = useState<IDataset[]>([...defaultArray]);
+  const [stats, setStats] = useState({
+    contracts: 0,
+    inputs: 0,
+    maintenance: 0,
+    transport: 0,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -55,27 +66,32 @@ const Home: React.FC = () => {
     setLoading(true);
 
     try {
-      const { data } = await api.post<{ fitness: number; months: number[] }>(
-        '/fitness',
-        {
-          gene: emojiToBase64(emojiInput),
-          scenario: {
-            budget,
-            grains: datasets.grains.data.map(valueArr => valueArr.value),
-            inputs: datasets.inputs.data.map(valueArr => valueArr.value),
-            maintenance: datasets.maintenance.data.map(
-              valueArr => valueArr.value,
-            ),
-            harvest: datasets.harvest.data.map(
-              valueArr => valueArr.value / 100,
-            ),
-            contracts: datasets.contracts.data.map(valueArr => valueArr.value),
-            transport: datasets.transport.data.map(valueArr => valueArr.value),
-            route: datasets.route.data.map(valueArr => valueArr.value / 100),
-            price: datasets.price.data.map(valueArr => valueArr.value),
-          },
+      const { data } = await api.post<{
+        fitness: number;
+        months: number[];
+        stats: {
+          contracts: number;
+          inputs: number;
+          maintenance: number;
+          transport: number;
+        };
+      }>('/fitness', {
+        gene: emojiToBase64(emojiInput),
+        scenario: {
+          budget,
+          grains: datasets.grains.data.map(valueArr => valueArr.value),
+          inputs: datasets.inputs.data.map(valueArr => valueArr.value),
+          maintenance: datasets.maintenance.data.map(
+            valueArr => valueArr.value,
+          ),
+          harvest: datasets.harvest.data.map(valueArr => valueArr.value / 100),
+          contracts: datasets.contracts.data.map(valueArr => valueArr.value),
+          transport: datasets.transport.data.map(valueArr => valueArr.value),
+          route: datasets.route.data.map(valueArr => valueArr.value / 100),
+          price: datasets.price.data.map(valueArr => valueArr.value),
         },
-      );
+      });
+      console.log('FITNESS', data);
       setProfit(data.fitness);
       setPoints(prevPoints =>
         prevPoints.map((point, index) => ({
@@ -83,6 +99,7 @@ const Home: React.FC = () => {
           value: data.months[index],
         })),
       );
+      setStats(data.stats);
     } catch (err) {
       setError('Could not load gene fitness');
       console.log('ERR', err);
@@ -98,7 +115,15 @@ const Home: React.FC = () => {
 
     try {
       const { data } = await api.post<{
-        best: string;
+        best: {
+          gene: string;
+          stats: {
+            contracts: number;
+            inputs: number;
+            maintenance: number;
+            transport: number;
+          };
+        };
         fitness: number;
         months: number[];
       }>('/process', {
@@ -117,7 +142,7 @@ const Home: React.FC = () => {
         },
       });
       console.log('process', data);
-      setEmojiInput(base64ToEmoji(data.best));
+      setEmojiInput(base64ToEmoji(data.best.gene));
       setProfit(data.fitness);
       setPoints(prevPoints =>
         prevPoints.map((point, index) => ({
@@ -125,6 +150,7 @@ const Home: React.FC = () => {
           value: data.months[index],
         })),
       );
+      setStats(data.best.stats);
     } catch (err) {
       setError('Could not get best gene data');
       console.log('ERR', err);
@@ -181,14 +207,14 @@ const Home: React.FC = () => {
         <EmojiContent>
           <Button
             color={theme.green}
-            overlayValue={28}
+            overlayValue={Number((stats.contracts * 100).toFixed(2))}
             onClick={() => modalRef.current?.show('Contratos', 'contracts')}
           >
             📝 Contratos
           </Button>
           <Button
             color={theme.green}
-            overlayValue={21}
+            overlayValue={Number((stats.transport * 100).toFixed(2))}
             onClick={() => modalRef.current?.show('Transporte', 'transport')}
           >
             ⛟ Transporte
@@ -210,14 +236,14 @@ const Home: React.FC = () => {
           </Button>
           <Button
             color={theme.green}
-            overlayValue={39}
+            overlayValue={Number((stats.inputs * 100).toFixed(2))}
             onClick={() => modalRef.current?.show('Insumos', 'inputs')}
           >
             💧 Insumos
           </Button>
           <Button
             color={theme.green}
-            overlayValue={12}
+            overlayValue={Number((stats.maintenance * 100).toFixed(2))}
             onClick={() => modalRef.current?.show('Manutenção', 'maintenance')}
           >
             🚜 Manutenção
@@ -286,13 +312,17 @@ const Home: React.FC = () => {
           />
         </Card>
         <Card style={{ flex: 0.2 }}>
-          <Label>Lucro total (1 ano)</Label>
+          <Label>Montante (1 ano)</Label>
           <TotalProfit>
-            <TotalProfitLabel>{formatCurrency(budget)}</TotalProfitLabel>
             <TotalProfitLabel>
-              {formatCurrency(profit - budget)}
+              {formatCurrency(budget * -1, true)}
             </TotalProfitLabel>
-            <TotalProfitAmount>{formatCurrency(profit)}</TotalProfitAmount>
+            <TotalProfitLabel>
+              {formatCurrency(profit + budget, true)}
+            </TotalProfitLabel>
+            <TotalProfitAmount>
+              {formatCurrency(profit, true)}
+            </TotalProfitAmount>
           </TotalProfit>
         </Card>
         <Card style={{ flex: 0.15 }}>
