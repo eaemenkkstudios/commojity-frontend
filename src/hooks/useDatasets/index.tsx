@@ -100,9 +100,9 @@ export const DatasetsContext = createContext<IDatasetsContextData>(
 export const DatasetsProvider: React.FC = ({ children }) => {
   // Context states
   const [datasets, setDatasets] = useState<IDatasets>({
-    grains: { min: 0, max: 1000, data: [...defaultArray], stat: 0 },
-    inputs: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
-    maintenance: { min: 0, max: 100, data: [...defaultArray], stat: 0 },
+    grains: { min: 100, max: 1000, data: [...defaultArray], stat: 0 },
+    inputs: { min: 1, max: 10, data: [...defaultArray], stat: 0 },
+    maintenance: { min: 10, max: 100, data: [...defaultArray], stat: 0 },
     harvest: {
       min: 0,
       max: 100,
@@ -110,8 +110,8 @@ export const DatasetsProvider: React.FC = ({ children }) => {
       data: [...defaultArray],
       stat: 0,
     },
-    contracts: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
-    transport: { min: 0, max: 10, data: [...defaultArray], stat: 0 },
+    contracts: { min: 1, max: 5, data: [...defaultArray], stat: 0 },
+    transport: { min: 1, max: 5, data: [...defaultArray], stat: 0 },
     route: {
       min: 0,
       max: 100,
@@ -119,7 +119,7 @@ export const DatasetsProvider: React.FC = ({ children }) => {
       data: [...defaultArray],
       stat: 0,
     },
-    price: { min: 0, max: 100, data: [...defaultArray], stat: 0 },
+    price: { min: 5, max: 20, data: [...defaultArray], stat: 0 },
   });
 
   const randomizeData = useCallback(() => {

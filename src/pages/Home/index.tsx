@@ -96,7 +96,7 @@ const Home: React.FC = () => {
       );
       setStats(data.stats);
     } catch (err) {
-      setError('Could not load gene fitness');
+      setError('Não foi possível obter o fitness do gene');
       console.log('ERR', err);
     }
 
@@ -147,7 +147,7 @@ const Home: React.FC = () => {
       );
       setStats(data.best.stats);
     } catch (err) {
-      setError('Could not get best gene data');
+      setError('Não foi possível obter o melhor gene');
       console.log('ERR', err);
     }
     setLoading(false);
@@ -159,7 +159,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     if (refresh) {
-      const timer = setTimeout(() => getGenePerformance(), 700);
+      const timer = setTimeout(() => getGenePerformance(), 1500);
       return () => clearTimeout(timer);
     }
   }, [getGenePerformance, refresh]);
